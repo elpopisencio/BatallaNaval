@@ -1,28 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+<<<<<<< HEAD
 import java.util.*;
+=======
+package principal;
+import java.util.Scanner;
+
+>>>>>>> dc299467d3a7539c728f016bf82887119a7b8b8c
 /**
  *
  * @author popix
  */
 public class Tablero {
 
-    private char[][] tablero;
+    private int[][] tablero;
     private int cantidad;
     private int barco;
 
     public Tablero(int dim) {
-        tablero = new char[dim][dim];
+        tablero = new int[dim][dim];
         for(int i = 0; i < dim; i++){
             for(int j = 0; j < dim; j++){
-                tablero[i][j] = '-';
+                tablero[i][j] = 0;
             }
         }
         cantidad = 0;
-        barco = '1';
+        barco = 1;
     }
 
     public boolean insertarBarco(int lon, boolean dirHor, int fil, int col) {
@@ -34,7 +36,7 @@ public class Tablero {
         if (dirHor) {
             if (col + lon <= tablero.length) {
                 for (int i = 0; i < lon; i++) {
-                    tablero[fil][col + i] = (char)barco;
+                    tablero[fil][col + i] = barco;
                 }
                 cantidad = cantidad + lon;      
                 barco = barco + 1;
@@ -43,7 +45,7 @@ public class Tablero {
         } else {
             if (fil + lon <= tablero.length) {
                 for (int i = 0; i < lon; i++) {
-                    tablero[fil + i][col] = (char)barco;
+                    tablero[fil + i][col] = barco;
                 }
                 cantidad = cantidad + lon;
                 barco = barco + 1;
@@ -67,7 +69,7 @@ public class Tablero {
             }else{
                 aux = 1;
             }
-            tablero[fil][col] = '*';
+            tablero[fil][col] = -1;
             cantidad--;
         }
         return aux;
@@ -75,7 +77,7 @@ public class Tablero {
 
     private boolean seHundio(int fil, int col) {
         boolean retorno = true;
-        char aux = tablero[fil][col];
+        int aux = tablero[fil][col];
         if(     fil > 0 && tablero[fil -1][col] == aux ||
                 fil < tablero.length - 1 && tablero[fil + 1][col] == aux ||
                 col > 0 && tablero[fil][col-1] == aux ||
@@ -89,12 +91,20 @@ public class Tablero {
         return cantidad > 0;
     }
     
-    @Override
-        public String toString(){
+
+        public String toString(boolean mio){
         String string = "";
         for(int i = 0; i < tablero.length; i++){
             for(int j = 0; j < tablero.length; j++){
-                string = string + tablero[i][j] + "  ";
+                if(mio && tablero[i][j] > 0){
+                    string = string + tablero[i][j] + "  ";
+                } else{
+                    if(tablero[i][j] < 0){
+                        string = string + "*  ";
+                    }else{
+                        string = string + "-  ";
+                    }
+                }
             }
             string = string + "\n";
         }
@@ -104,16 +114,23 @@ public class Tablero {
     // Main de pruebas:
     public static void main(String [ ] args){
         Tablero tablerito = new Tablero(10);
-        System.out.println(tablerito.toString());
+        System.out.println(tablerito.toString(true));
         if(tablerito.insertarBarco(4, false, 6, 8)){
+        System.out.println(tablerito.toString(false));
             if(tablerito.atacarBarco(6, 8) == 1){
                 System.out.println("le diste");
             }
-            System.out.println(tablerito.toString());
+            System.out.println(tablerito.toString(false));
         }else{
             System.out.println("El barco no entro");
         }
+<<<<<<< HEAD
         Scanner scan = new Scanner(System.in);
         int d = scan.nextInt();
+=======
+        Scanner keyboard = new Scanner(System.in);
+        int a = keyboard.nextInt();
+        System.out.println(a);
+>>>>>>> dc299467d3a7539c728f016bf82887119a7b8b8c
     }
 }
