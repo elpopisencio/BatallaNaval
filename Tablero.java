@@ -3,8 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package principal;
-
+import java.util.*;
 /**
  *
  * @author popix
@@ -114,5 +113,7 @@ public class Tablero {
         }else{
             System.out.println("El barco no entro");
         }
+        Scanner scan = new Scanner(System.in);
+        int d = scan.nextInt();
     }
 }
