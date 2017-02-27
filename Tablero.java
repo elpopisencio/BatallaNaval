@@ -15,7 +15,7 @@ public class Tablero {
             }
         }
         cantidad = 0;
-        barco = 1;
+        barco = 0;
     }
 
     public boolean insertarBarco(int lon, boolean dirHor, int fil, int col) {
@@ -23,20 +23,25 @@ public class Tablero {
          * Coloca un barco en la posicion fil, col, con longitud lon en
          * direccion horizantal si dirHor es true. Devuelve true en caso de lograrlo
          */
-        boolean retorno = false;
+        boolean retorno = false,
+			aux;
+		barco++;                
         if (dirHor) {
-            if (insertarBarcoInterno(lon, dirHor, fil, col)) {
+            aux = insertarBarcoInterno(lon, dirHor, fil, col);
+            if (aux) {
                 cantidad = cantidad + lon;
-                //barco = barco + 1;
                 retorno = true;
             }
         } else {
-             if (insertarBarcoInterno(lon, dirHor, fil, col)) {
+			aux = insertarBarcoInterno(lon, dirHor, fil, col);
+             if (aux) {
                 cantidad = cantidad + lon;
-                //barco = barco + 1;
                 retorno = true;
             }
         }
+        if (!retorno){
+			barco--;
+		}
         return retorno;
     }
 
@@ -45,19 +50,21 @@ public class Tablero {
         if (fil < tablero.length && col < tablero.length) {
             if (lon != 1) {
                 if (dirHor) {
-                    if (insertarBarco(lon - 1, dirHor, fil, col + 1)) {
+                    if (tablero[fil][col] == 0 && insertarBarcoInterno(lon - 1, dirHor, fil, col + 1)) {
                         tablero[fil][col] = barco;
                         retorno = true;
                     }
                 } else {
-                    if (insertarBarco(lon - 1, dirHor, fil + 1, col)) {
+                    if (tablero[fil][col] == 0 && insertarBarcoInterno(lon - 1, dirHor, fil + 1, col)) {
                         tablero[fil][col] = barco;
                         retorno = true;
                     }
                 }
             }else{
-                tablero[fil][col] = barco;
-                retorno = true;
+				if (tablero[fil][col] == 0){
+					tablero[fil][col] = barco;
+					retorno = true;
+				}
             }
         }
         return retorno;
@@ -126,7 +133,8 @@ public class Tablero {
 
     private static void menu(Tablero tab) {
         int a, b, c;
-        boolean band = true;
+        boolean band = true,
+				aux;
         while (band) {
             System.out.println("Ingrese un valor:\n"
                     + "1 - Agregar barco\n"
@@ -143,20 +151,37 @@ public class Tablero {
                         + "1 - Vertical\n"
                         + "2 - Horizontal");
                 c = keyboard.nextInt();
-                tab.insertarBarco(3, (c == 2), a, b);
+                aux = tab.insertarBarco(3, (c == 2), a, b);
+                if (aux){
+					System.out.println("Se inserto con exito");
+				} else{
+					System.out.println("No se pudo insertar");
+				}
+				
                 System.out.println(tab.toString(true));
-            }
-            if (a == 2){
-				System.out.print("Ingrese coordenadas: \n x: ");
-                a = keyboard.nextInt() - 1;
-                System.out.print("y: ");
-                b = keyboard.nextInt() - 1;
-                tab.atacarBarco(a, b);
-                System.out.println(tab.toString(true));                
-			}
-			if (a == 0){
-				band = false;	
-			}
+				} else{
+					if (a == 2){
+						System.out.print("Ingrese coordenadas: \n x: ");
+						a = keyboard.nextInt() - 1;
+						System.out.print("y: ");
+						b = keyboard.nextInt() - 1;
+						c = tab.atacarBarco(a, b);
+						if (c == 0){
+							System.out.println("Agua");
+						}
+						if (c == 1){
+							System.out.println("Le diste a un barco");
+						}
+						if (c == -1){
+							System.out.println("Hundiste un barco");
+						}
+						System.out.println(tab.toString(true));                
+					} else{
+						if (a == 0){
+							band = false;	
+						}
+					}
+				}
         }
     }
 }
