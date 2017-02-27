@@ -1,15 +1,6 @@
 
-<<<<<<< HEAD
-import java.util.*;
-=======
-package principal;
 import java.util.Scanner;
 
->>>>>>> dc299467d3a7539c728f016bf82887119a7b8b8c
-/**
- *
- * @author popix
- */
 public class Tablero {
 
     private int[][] tablero;
@@ -18,8 +9,8 @@ public class Tablero {
 
     public Tablero(int dim) {
         tablero = new int[dim][dim];
-        for(int i = 0; i < dim; i++){
-            for(int j = 0; j < dim; j++){
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 tablero[i][j] = 0;
             }
         }
@@ -34,21 +25,38 @@ public class Tablero {
          */
         boolean retorno = false;
         if (dirHor) {
-            if (col + lon <= tablero.length) {
-                for (int i = 0; i < lon; i++) {
-                    tablero[fil][col + i] = barco;
-                }
-                cantidad = cantidad + lon;      
-                barco = barco + 1;
+            if (insertarBarcoInterno(lon, dirHor, fil, col)) {
+                cantidad = cantidad + lon;
+                //barco = barco + 1;
                 retorno = true;
             }
         } else {
-            if (fil + lon <= tablero.length) {
-                for (int i = 0; i < lon; i++) {
-                    tablero[fil + i][col] = barco;
-                }
+             if (insertarBarcoInterno(lon, dirHor, fil, col)) {
                 cantidad = cantidad + lon;
-                barco = barco + 1;
+                //barco = barco + 1;
+                retorno = true;
+            }
+        }
+        return retorno;
+    }
+
+    private boolean insertarBarcoInterno(int lon, boolean dirHor, int fil, int col) {
+        boolean retorno = false;
+        if (fil < tablero.length && col < tablero.length) {
+            if (lon != 1) {
+                if (dirHor) {
+                    if (insertarBarco(lon - 1, dirHor, fil, col + 1)) {
+                        tablero[fil][col] = barco;
+                        retorno = true;
+                    }
+                } else {
+                    if (insertarBarco(lon - 1, dirHor, fil + 1, col)) {
+                        tablero[fil][col] = barco;
+                        retorno = true;
+                    }
+                }
+            }else{
+                tablero[fil][col] = barco;
                 retorno = true;
             }
         }
@@ -64,9 +72,9 @@ public class Tablero {
          */
         int aux = 0;
         if (tablero[fil][col] >= 1) {
-            if(this.seHundio(fil, col)){
+            if (this.seHundio(fil, col)) {
                 aux = -1;
-            }else{
+            } else {
                 aux = 1;
             }
             tablero[fil][col] = -1;
@@ -78,30 +86,29 @@ public class Tablero {
     private boolean seHundio(int fil, int col) {
         boolean retorno = true;
         int aux = tablero[fil][col];
-        if(     fil > 0 && tablero[fil -1][col] == aux ||
-                fil < tablero.length - 1 && tablero[fil + 1][col] == aux ||
-                col > 0 && tablero[fil][col-1] == aux ||
-                col < tablero.length - 1 && tablero[fil][col+1] == aux){
+        if (fil > 0 && tablero[fil - 1][col] == aux
+                || fil < tablero.length - 1 && tablero[fil + 1][col] == aux
+                || col > 0 && tablero[fil][col - 1] == aux
+                || col < tablero.length - 1 && tablero[fil][col + 1] == aux) {
             retorno = false;
         }
         return retorno;
     }
-    
-    public boolean quedanBarcos(){
+
+    public boolean quedanBarcos() {
         return cantidad > 0;
     }
-    
 
-        public String toString(boolean mio){
+    public String toString(boolean mio) {
         String string = "";
-        for(int i = 0; i < tablero.length; i++){
-            for(int j = 0; j < tablero.length; j++){
-                if(mio && tablero[i][j] > 0){
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero.length; j++) {
+                if (mio && tablero[i][j] > 0) {
                     string = string + tablero[i][j] + "  ";
-                } else{
-                    if(tablero[i][j] < 0){
+                } else {
+                    if (tablero[i][j] < 0) {
                         string = string + "*  ";
-                    }else{
+                    } else {
                         string = string + "-  ";
                     }
                 }
@@ -110,27 +117,46 @@ public class Tablero {
         }
         return string;
     }
-    
+
     // Main de pruebas:
-    public static void main(String [ ] args){
+    public static void main(String[] args) {
         Tablero tablerito = new Tablero(10);
-        System.out.println(tablerito.toString(true));
-        if(tablerito.insertarBarco(4, false, 6, 8)){
-        System.out.println(tablerito.toString(false));
-            if(tablerito.atacarBarco(6, 8) == 1){
-                System.out.println("le diste");
+        menu(tablerito);
+    }
+
+    private static void menu(Tablero tab) {
+        int a, b, c;
+        boolean band = true;
+        while (band) {
+            System.out.println("Ingrese un valor:\n"
+                    + "1 - Agregar barco\n"
+                    + "2 - Bombardear barco\n"
+                    + "0 - salir");
+            Scanner keyboard = new Scanner(System.in);
+            a = keyboard.nextInt();
+            if (a == 1) {
+                System.out.print("Ingrese coordenadas: \n x: ");
+                a = keyboard.nextInt() - 1;
+                System.out.print("y: ");
+                b = keyboard.nextInt() - 1;
+                System.out.println("Ingrese la que corresponda:\n"
+                        + "1 - Vertical\n"
+                        + "2 - Horizontal");
+                c = keyboard.nextInt();
+                tab.insertarBarco(3, (c == 2), a, b);
+                System.out.println(tab.toString(true));
             }
-            System.out.println(tablerito.toString(false));
-        }else{
-            System.out.println("El barco no entro");
+            if (a == 2){
+				System.out.print("Ingrese coordenadas: \n x: ");
+                a = keyboard.nextInt() - 1;
+                System.out.print("y: ");
+                b = keyboard.nextInt() - 1;
+                tab.atacarBarco(a, b);
+                System.out.println(tab.toString(true));                
+			}
+			if (a == 0){
+				band = false;	
+			}
         }
-<<<<<<< HEAD
-        Scanner scan = new Scanner(System.in);
-        int d = scan.nextInt();
-=======
-        Scanner keyboard = new Scanner(System.in);
-        int a = keyboard.nextInt();
-        System.out.println(a);
->>>>>>> dc299467d3a7539c728f016bf82887119a7b8b8c
     }
 }
